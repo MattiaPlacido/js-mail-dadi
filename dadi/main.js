@@ -1,33 +1,40 @@
-// Generare un numero random da 1 a 6, sia per il giocatore sia per il computer.
-// Stabilire il vincitore, in base a chi fa il punteggio più alto.
+// Attraverso l'apposita API di Boolean https://flynn.boolean.careers/exercises/api/random/mail generare 10 indirizzi email e stamparli in pagina all'interno di una lista.
+// Abbellire con CSS o Bootstrap
+// Inserire un bottone che al click faccia il fetch per altre 10 mail (sostituendo le altre)
 
-//Mi sono permesso di complicare un po' il programma per provare le funzioni e la ricorsione in maniera tale non si possa avere lo stesso risultato
+//HTML ELEMENTS
+const userInputEmails = document.getElementById("emails-number");
+const generateButton = document.getElementById("generate-emails-button");
+const emailListEl = document.getElementById("email-list");
 
-function nFacedDice(n) {
-  return Math.floor(Math.random() * n + 1);
+const nOfEmails = 10; //default
+
+for (let i = 0; i < nOfEmails; i++) {
+  fetch("https://flynn.boolean.careers/exercises/api/random/mail")
+    .then((response) => response.json())
+    .then((data) => {
+      emailListEl.innerHTML += `<div class="list-group-item">Email ${i + 1} : ${
+        data.response
+      }</div>`;
+    });
 }
 
-function main() {
-  if (repetitions > 0) {
-    console.log("Partita numero", repetitions + 1);
-  }
-  const userNumber = nFacedDice(6);
-  const cpuNumber = nFacedDice(6);
-
-  console.log("Hai fatto : ", userNumber);
-  console.log("il computer ha fatto : ", cpuNumber);
-
-  if (userNumber !== cpuNumber) {
-    userNumber > cpuNumber
-      ? console.log("Hai vinto!")
-      : console.log("Ha vinto il computer.");
+generateButton.addEventListener("click", () => {
+  if (userInputEmails.value > 0 && !isNaN(userInputEmails.value)) {
+    //resetto la lista di mail
+    emailListEl.innerHTML = "";
+    //faccio richieste pari a quanto mi ha detto l'utente
+    for (let i = 0; i < userInputEmails.value; i++) {
+      fetch("https://flynn.boolean.careers/exercises/api/random/mail")
+        .then((response) => response.json())
+        .then((data) => {
+          //stampo ogni mail come oggetto di lista
+          emailListEl.innerHTML += `<div class="list-group-item">Email ${
+            i + 1
+          } : ${data.response}</div>`;
+        });
+    }
   } else {
-    console.log("Avete lo stesso risultato, ritirate!");
-    repetitions++;
-    main();
+    alert("Inserisci valori validi");
   }
-}
-
-let repetitions = 0;
-
-main();
+});
